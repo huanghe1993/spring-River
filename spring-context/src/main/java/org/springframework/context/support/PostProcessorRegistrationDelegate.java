@@ -53,17 +53,32 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 
+	/**
+	 * 执行BeanFactoryPostProcessors的所有实现类
+	 * 	1、spring内置的-在这个方法之前他是被封装成了BeanDefinition,并且put到了beanMap中
+	 * 	2、spring内置的，并且没有被封装为BeanDefinition,并且没有put到beanMap中
+	 * 	3、自定义的可以一开始不在beanMap中。通过扫描出来的
+	 *  4、自定义的可以一开始不在beanMap中。通过api提供的
+	 *  5、实现了order接口的类
+	 *
+	 *
+	 * @param beanFactory
+	 * @param beanFactoryPostProcessors
+	 */
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
+		// 这里的beanFactory默认是DefaultListableBeanFactory实现了BeanDefinitionRegistry接口
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
+			// 循环beanFactoryPostProcessors。这里的是通过API通过的才会存到 beanFactoryPostProcessors参数中
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
@@ -80,6 +95,10 @@ final class PostProcessorRegistrationDelegate {
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
+			/**
+			 * 存储的是当前需要执行 BeanDefinitionRegistryPostProcessor 实现类
+			 * 每次执行完会清除，防止重复的执行
+			 */
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.

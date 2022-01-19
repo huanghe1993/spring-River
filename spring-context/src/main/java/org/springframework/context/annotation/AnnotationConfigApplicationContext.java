@@ -85,6 +85,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		this();
+		/*
+		  向spring 的容器中注册bean
+		  第②部分！！！
+		 */
 		register(componentClasses);
 		refresh();
 	}
@@ -96,6 +100,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * @param basePackages the packages to scan for component classes
 	 */
 	public AnnotationConfigApplicationContext(String... basePackages) {
+		// 这里由于这个类有父类，所以先调用父类的构造函数，然后才会调用自己的构造函数
+		// 在自己的构造函数中初始化了一个reader和scanner
 		this();
 		scan(basePackages);
 		refresh();
@@ -151,14 +157,20 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * Register one or more component classes to be processed.
 	 * <p>Note that {@link #refresh()} must be called in order for the context
 	 * to fully process the new classes.
+	 * 注册单个bean给容器
+	 * 比如有新加的类可以用这个方法
+	 * 但是注册之后需要手动调用refresh()方法触发容器解释注释
+	 *
 	 * @param componentClasses one or more component classes &mdash; for example,
 	 * {@link Configuration @Configuration} classes
 	 * @see #scan(String...)
 	 * @see #refresh()
 	 */
 	@Override
+	// 从我们的例子中, 这里的componentClasses就是我们传进来的AppConfig.class
 	public void register(Class<?>... componentClasses) {
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
+		// 实际上是委托给AnnotatedBeanDefinitionReader类来注册
 		this.reader.register(componentClasses);
 	}
 

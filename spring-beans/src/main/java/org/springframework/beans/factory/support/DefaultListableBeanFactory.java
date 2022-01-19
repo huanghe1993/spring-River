@@ -191,6 +191,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 */
 	public DefaultListableBeanFactory() {
 		super();
+		System.out.println("DefaultListableBeanFactory 初始化了");
 	}
 
 	/**

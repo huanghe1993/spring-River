@@ -43,8 +43,8 @@ public interface Condition {
 
 	/**
 	 * Determine if the condition matches.
-	 * @param context the condition context
-	 * @param metadata the metadata of the {@link org.springframework.core.type.AnnotationMetadata class}
+	 * @param context the condition context；条件上下文，ConditionContext接口类型的，可以用来获取容器中上下文信息。
+	 * @param metadata the metadata of the {@link org.springframework.core.type.AnnotationMetadata class}；用来获取被@Conditional标注的对象上的所有注解信息
 	 * or {@link org.springframework.core.type.MethodMetadata method} being checked
 	 * @return {@code true} if the condition matches and the component can be registered,
 	 * or {@code false} to veto the annotated component's registration

@@ -37,6 +37,19 @@ public interface ConfigurationCondition extends Condition {
 
 	/**
 	 * The various configuration phases where the condition could be evaluated.
+	 * 条件判断在什么时候执行？
+	 *
+	 * 条件判断的执行分为两个阶段，如下：
+	 * 1、配置类解析阶段(ConfigurationPhase.PARSE_CONFIGURATION)：在这个阶段会得到一批配置类的信息和一些需要注册的Bean。
+	 * 2、Bean注册阶段(ConfigurationPhase.REGISTER_BEAN)：将配置类解析阶段得到的配置类和需要注册的Bean注入到容器中。
+	 *
+	 * 默认都是配置解析阶段，其实也就够用了，但是在Spring Boot中使用了ConfigurationCondition，这个接口可以自定义执行阶段，
+	 * 比如@ConditionalOnMissingBean都是在Bean注册阶段执行，因为需要从容器中判断Bean。
+	 *
+	 * 这个两个阶段有什么不同呢？：
+	 * 1、配置类解析阶段只是将需要加载配置类和一些Bean（被@Conditional注解过滤掉之后）收集起来，
+	 * 2、而Bean注册阶段是将的收集来的Bean和配置类注入到容器中，
+	 * 3、如果在配置类解析阶段执行Condition接口的matches()接口去判断某些Bean是否存在IOC容器中，这个显然是不行的，因为这些Bean还未注册到容器中。
 	 */
 	enum ConfigurationPhase {
 
